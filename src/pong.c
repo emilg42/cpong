@@ -68,7 +68,7 @@ void *kinput(void*);
 
 // additional
 void _exit(int);
-void _init();
+void _initg();
 
 // game logic
 void initball(ball*);
@@ -194,7 +194,7 @@ void _exit(int code) {
     exit(code);
 }
 
-void _init() {
+void _initg() {
     clear();
     cursor(0);
     srand(time(NULL));
@@ -223,32 +223,44 @@ void enhance(ball *b) {
 }
 
 void collide(ball *b, paddle *p1, paddle *p2, int *res) {
-    // previous pos.
-    int px = b->x - b->vx;
-    int py = b->y - b->vy;
-    *res = 0;
+    int n = 0;
 
-    // horizontal collision(s)
-    if (b->y < 0 || b->y > HEIGHT - 1) {
-        b->vy *= -1;
-        b->y = (b->y < 0)
-            ? -b->y
-            : 2 * HEIGHT - 2 - b->y;
-    }
+    // collide until valid
+    for(;;) {
 
-    // paddle collision(s)
-    if (b->x <= p1->x || b->x >= p2->x) {
-        paddle p = (b->x <= p1->x) ? *p1 : *p2;
-        int ix = (p.x == p1->x) ? p.x + 1 : p.x - 1;
-        int iy = py + ((ix - px) / (b->x - px)) * (b->y - py);
+        // previous pos.
+        int px = b->x - b->vx;
+        int py = b->y - b->vy;
+        *res = 0;
 
-        if (iy >= p.y[0] && iy <= p.y[PADDLE_HEIGHT - 1]) {
-            b->vx *= -1;
-            b->x = 2 * ix - b->x;
+        // horizontal collision(s)
+        if (b->y < 0 || b->y > HEIGHT - 1) {
+            b->vy *= -1;
+            b->y = (b->y < 0)
+                ? -b->y
+                : 2 * HEIGHT - 2 - b->y;
         }
-        else {
-            *res = (p.x == p1->x) ? -1 : 1;
+
+        // paddle collision(s)
+        if (b->x <= p1->x || b->x >= p2->x) {
+            paddle p = (b->x <= p1->x) ? *p1 : *p2;
+            int ix = (p.x == p1->x) ? p.x + 1 : p.x - 1;
+            int iy = py + ((ix - px) / (b->x - px)) * (b->y - py);
+
+            if (iy >= p.y[0] && iy <= p.y[PADDLE_HEIGHT - 1]) {
+                b->vx *= -1;
+                b->x = 2 * ix - b->x;
+            }
+            else {
+                *res = (p.x == p1->x) ? -1 : 1;
+                return;
+            }
         }
+
+        // terminate colllision(s)
+        if ((b->x > p1->x && b->x < p2->x && b->y >= 0 \
+            && b->y < HEIGHT) || ++n == 20 )
+            return;
     }
 }
 
@@ -298,7 +310,7 @@ int main() {
     // initial setup
     int res, key = -1;
     window w = getws();
-    _init();
+    _initg();
     banner(&w);
     settings(&w);
     border(&w);
