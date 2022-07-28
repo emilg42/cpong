@@ -2,6 +2,8 @@
 
 CPong is a simple and customizable pong clone written in C, which was created to mess around with basic linear algebra and CLI graphics. It is should be compatible with most unix shells, as long as *console_codes* and optionally *unicode/wchars* are supported.
 
+![demo](https://user-images.githubusercontent.com/47120350/181483528-4b4daa40-61ba-444f-8218-43e4548447cb.gif)
+
 ## Installation
 
 Use [GNU make](https://www.gnu.org/software/make/manual/make.html) to create executable or install into path.
@@ -29,7 +31,7 @@ y<sub>i</sub> = y<sub>p</sub> + &lambda;(y - y<sub>p</sub>) &rarr; y<sub>i</sub>
 
 ```C
 if (iy >= p.y[0] && iy <= p.y[PADDLE_LENGTH - 1]) {
-    collide...
+    // collide...
 }
 ```
 
